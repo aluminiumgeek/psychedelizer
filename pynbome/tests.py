@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# tests.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Some unit tests
 
 import unittest
 

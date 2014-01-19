@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# nbome.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Compose source image with pattern
 
 from wand.image import Image
 

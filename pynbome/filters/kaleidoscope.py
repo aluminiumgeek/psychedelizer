@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# kaleidoscope.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Kaleidoscope effect
 
 import random
 import subprocess

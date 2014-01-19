@@ -1,4 +1,12 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# image.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Class for psychedelic image processing
+#
+# pip install Wand
 
 import os
 import random

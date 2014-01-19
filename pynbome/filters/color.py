@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# color.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Rainbow colored transformation
 
 import random
 import subprocess

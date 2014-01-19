@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# glass.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# View through tiled glass
 
 import subprocess
 import tempfile

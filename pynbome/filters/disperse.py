@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# pynbome library
+# disperse.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
+# Dispersion effect
 
 import random
 import subprocess
