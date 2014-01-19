@@ -16,9 +16,9 @@ There're several psychedelic filters:
 * **glass** - view through tiled glass
 * **kaleidoscope** - kaleidoscope effect
 
-* **lsd** - combine source image lsd pattern
+* **lsd** - combine source image with lsd pattern
 
-* **nbome** - combine source image nbome pattern
+* **nbome** - combine source image with nbome pattern
 
 Filter sources located inside <code>filters</code> directory
 
@@ -34,7 +34,7 @@ img.psychedelic()
 img.save('test.png')
 ```
 
-###List combine's patterns for image###
+###List image patterns###
 Image.combine() method takes pattern image name as first argument. If pattern was not specified, a random pattern applies
 
 ```python
@@ -54,7 +54,7 @@ filter_name = filters[0]
 img.psychedelic(filter_name)
 ```
 
-###Using several transformation###
+###Use several transformation###
 Of course you can apply patterns and filters several times
 
 ```python
