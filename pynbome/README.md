@@ -79,3 +79,9 @@ for i in range(3):
 
 print img.state
 ```
+
+##Gallery##
+![1](http://i.imgur.com/jdVT3kI.jpg)  
+![2](http://i.imgur.com/fm3wTvV.jpg)  
+![3](http://i.imgur.com/OPf42cu.jpg)  
+![4](http://i.imgur.com/ifj27ev.jpg)
