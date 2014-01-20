@@ -8,6 +8,7 @@
 
 import unittest
 
+import pynbome
 from image import Image 
 
 class PynbomeTest(unittest.TestCase):
@@ -23,10 +24,10 @@ class PynbomeTest(unittest.TestCase):
         self.assertEqual( self.img.size(), (100,100) )
         
     def testFilterList(self):
-        print 'Filters: {0}'.format(' '.join(self.img.list_filters()))
+        print 'Filters: {0}'.format(' '.join(pynbome.list_filters()))
         
     def testPatternList(self):
-        print 'Patterns: {0}'.format(' '.join(self.img.list_patterns()))
+        print 'Patterns: {0}'.format(' '.join(pynbome.list_patterns()))
         
     def testCombine(self):
         self.img.combine()
@@ -36,7 +37,7 @@ class PynbomeTest(unittest.TestCase):
         self.assertTrue(self.img.state[self.img.STATE_PATTERNS])
         
     def testPsychedelic(self):
-        filter_name = self.img.list_filters()[0]
+        filter_name = pynbome.list_filters()[0]
         self.img.psychedelic(filter_name='lsd')
         
         self.img.save('test.jpg')

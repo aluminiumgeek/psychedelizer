@@ -38,7 +38,9 @@ img.save('test.png')
 Image.combine() method takes pattern image name as first argument. If pattern was not specified, a random pattern applies
 
 ```python
-patterns = img.list_patterns()
+from pynbome import pynbome
+
+patterns = pynbome.list_patterns()
 
 pattern_name = patterns[0]
 img.combine(pattern_name)
@@ -48,7 +50,9 @@ img.combine(pattern_name)
 Image.psychedelic() method takes filter name as first argument. If filter was not specified, a random filter applies
 
 ```python
-filters = img.list_filters()
+from pynbome import pynbome
+
+filters = pynbome.list_filters()
 
 filter_name = filters[0]
 img.psychedelic(filter_name)

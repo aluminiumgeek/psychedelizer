@@ -5,17 +5,14 @@
 # image.py (c) Mikhail Mezyakov <mihail265@gmail.com>
 #
 # Class for psychedelic image processing
-#
-# pip install Wand
 
 import os
 import random
-import pkgutil
 import importlib
 
 from wand.image import Image as Wand
 
-DATA_DIR = 'data'
+import pynbome
 
 class NoImage(Exception):
     def __str__(self):
@@ -62,9 +59,9 @@ class Image(object):
 
     def combine(self, pattern_name=None):
         if pattern_name is None:
-            pattern_name = random.choice(self.list_patterns())
+            pattern_name = random.choice(pynbome.list_patterns())
         
-        pattern_filename = os.path.join(DATA_DIR, pattern_name)
+        pattern_filename = os.path.join(pynbome.DATA_DIR, pattern_name)
             
         with Wand(filename=pattern_filename) as fg_img:
             width, height = fg_img.size
@@ -80,7 +77,7 @@ class Image(object):
         elif filter_name is not None:
             image_filter = self.get_filter(filter_name)
         else:
-            image_filter = self.get_filter(random.choice(self.list_filters()))
+            image_filter = self.get_filter(random.choice(pynbome.list_filters()))
         
         self.img = image_filter.apply_filter(self.img)
         
@@ -91,10 +88,5 @@ class Image(object):
           
     def get_filter(self, filter_name):
         return importlib.import_module('filters.%s'%filter_name)
-          
-    def list_filters(self):
-        return [name for _, name, _ in pkgutil.iter_modules(['filters'])]
-      
-    def list_patterns(self):
-        return os.listdir(DATA_DIR)
+
       
