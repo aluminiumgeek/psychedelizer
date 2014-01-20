@@ -6,6 +6,7 @@
 #
 # Rainbow colored transformation
 
+import os
 import random
 import subprocess
 import tempfile
@@ -21,9 +22,9 @@ def apply_filter(img):
     
     img.save(filename=input_filename)
     
-    
-    
-    command = './lib/pseudocolor -o {2} {0} {1}'.format(
+    script_path = os.path.join(os.path.dirname(__file__), '../lib/pseudocolor')
+    command = '{0} -o {3} {1} {2}'.format(
+        script_path,
         input_filename,
         output_filename,
         random.randint(70, 190)

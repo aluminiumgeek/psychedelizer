@@ -6,6 +6,7 @@
 #
 # Dispersion effect
 
+import os
 import random
 import subprocess
 import tempfile
@@ -23,7 +24,9 @@ def apply_filter(img):
     
     
     s, d, c = random.randint(2, 6), random.randint(5, 10), random.randint(4, 9)
-    command = './lib/disperse -s {2} -d {3} -c {4} {0} {1}'.format(
+    script_path = os.path.join(os.path.dirname(__file__), '../lib/disperse')
+    command = '{0} -s {3} -d {4} -c {5} {1} {2}'.format(
+        script_path,
         input_filename,
         output_filename,
         s,

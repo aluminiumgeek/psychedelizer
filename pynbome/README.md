@@ -14,11 +14,8 @@ There're several psychedelic filters:
 * **disperse** - dispersion effect
 
 * **glass** - view through tiled glass
+
 * **kaleidoscope** - kaleidoscope effect
-
-* **lsd** - combine source image with lsd pattern
-
-* **nbome** - combine source image with nbome pattern
 
 Filter sources located inside <code>filters</code> directory
 

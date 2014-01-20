@@ -14,7 +14,8 @@ import pkgutil
 DATA_DIR = 'data'
 
 def list_filters():
-    return [name for _, name, _ in pkgutil.iter_modules(['filters'])]
+    modules_iter = pkgutil.iter_modules([os.path.join(os.path.dirname(__file__), 'filters')])
+    return [name for _, name, _ in modules_iter]
       
 def list_patterns():
-    return os.listdir(DATA_DIR)
+    return os.listdir(os.path.join(os.path.dirname(__file__), DATA_DIR))

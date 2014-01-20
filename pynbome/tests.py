@@ -6,6 +6,7 @@
 #
 # Some unit tests
 
+import os
 import unittest
 
 import pynbome
@@ -14,7 +15,7 @@ from image import Image
 class PynbomeTest(unittest.TestCase):
     
     def setUp(self):
-        self.image_filename = 'leary.jpg'
+        self.image_filename = os.path.join(os.path.dirname(__file__), 'leary.jpg')
         self.image = open(self.image_filename)
         
         self.img = Image(filename=self.image_filename)
@@ -38,7 +39,7 @@ class PynbomeTest(unittest.TestCase):
         
     def testPsychedelic(self):
         filter_name = pynbome.list_filters()[0]
-        self.img.psychedelic(filter_name='lsd')
+        self.img.psychedelic(filter_name='glass')
         
         self.img.save('test.jpg')
         

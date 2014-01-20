@@ -61,7 +61,7 @@ class Image(object):
         if pattern_name is None:
             pattern_name = random.choice(pynbome.list_patterns())
         
-        pattern_filename = os.path.join(pynbome.DATA_DIR, pattern_name)
+        pattern_filename = os.path.join(os.path.dirname(__file__), pynbome.DATA_DIR, pattern_name)
             
         with Wand(filename=pattern_filename) as fg_img:
             width, height = fg_img.size

@@ -6,6 +6,7 @@
 #
 # Kaleidoscope effect
 
+import os
 import random
 import subprocess
 import tempfile
@@ -22,8 +23,10 @@ def apply_filter(img):
     img.save(filename=input_filename)
     
     orients = (0, 90, 180, 270)
-    
-    command = './lib/kaleidoscopic -m image -o {2} {3} {0} {1}'.format(
+
+    script_path = os.path.join(os.path.dirname(__file__), '../lib/kaleidoscopic')
+    command = '{0} -m image -o {3} {4} {1} {2}'.format(
+        script_path,
         input_filename,
         output_filename,
         random.choice(orients),
