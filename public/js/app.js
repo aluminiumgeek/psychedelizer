@@ -1,3 +1,10 @@
+/*
+* psychedelizer.0x80.ru
+* app.js (c) Mikhail Mezyakov <mihail265@gmail.com>
+* 
+* Angular application init file
+*/
+
 var app = angular.module('Psychedelizer', ['angularFileUpload']);
 
 app.controller('HomeCtrl', function($scope, $http, $upload) {

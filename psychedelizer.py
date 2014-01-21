@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+#
+# psychedelizer.0x80.ru
+# psychedelizer.py (c) Mikhail Mezyakov <mihail265@gmail.com>
+#
 
 import os
 import time
