@@ -5,6 +5,7 @@ A Python library to make psychedelic images
 
 ##Requirements##
 * [Wand](http://wand-py.org/)
+* [ImageMagick](http://imagemagick.org/)
 
 ##Filters##
 There're several psychedelic filters:
