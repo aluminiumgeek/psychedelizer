@@ -1,0 +1,97 @@
+<!doctype html>
+
+<html ng-app='Psychedelizer'>
+    <head>
+        <title>Psychedelizer</title>
+
+        <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+        <script src="/js/angular.min.js"></script>
+        <script src="/js/angular-resource.min.js"></script>
+        <script src="/js/angular-file-upload.min.js"></script>
+        <script src="/js/app.js"></script>
+
+        <link href="css/yeti.css" rel="stylesheet"/>
+        <link href="css/app.css" rel="stylesheet"/>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    </head>
+
+    <body ng-controller='HomeCtrl'>
+        <div id='container'>
+            <h1>Psychedelizer</h1>
+
+            <div class='line'></div>
+
+            <div class='upload-block'>
+                <div class='title'>Upload an image</div>
+
+                <div class='buttons'>
+                    <div class='computer btn btn-primary' title='From computer'>
+                        <i class='fa fa-laptop'></i>
+                        <input type="file" ng-file-select="file_selected($files)" >
+                    </div>
+                    <div class='internet btn btn-info' title='From URL' ng-click='internet_input_toggle()'>
+                        <i class='fa fa-globe'></i>
+                    </div>
+                </div>
+                
+                <div class='internet-input' ng-show='internet_input'>
+                    <input type='text' class='form-control' name='url' placeholder='http://' ng-model='url'/>
+                    <button class='btn btn-primary btn-success btn-sm' ng-click='internet_upload()'>
+                        <i class='fa fa-upload'></i>
+                        Upload
+                    </button>
+                </div>
+
+                <div class='filters' ng-show='original'>
+                    <div class='btn-group'>
+                        <span ng-repeat='filter in image_filters' ng-click='select_filter(filter)' ng-class='{active: filter_in_selected(filter), btn: original, "btn-xs": original, "btn-primary": original}'>
+                            {{filter}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class='image-block' ng-show='original'>
+                    <div class='original' ng-show='original'>
+                        <img src='/tmp/{{original}}' />
+                    </div>
+                    <div class='arrow'>
+                        <i class='fa fa-long-arrow-right'></i>
+                    </div>
+                    <div class='preview' ng-show='preview'>
+                        <img src='/tmp/{{preview}}' ng-class='{loading: loading}'/>
+                    </div>
+                </div>
+
+                <div class='clear'></div>
+
+                <div class='save-block' ng-show='preview'>
+                    <button class='btn btn-success' ng-click='save()'>
+                        <i class='fa fa-save'></i>
+                        Save
+                    </button>
+                </div>
+
+                
+            </div>
+
+            <div class='line'></div>
+
+            <div class='latest-block'>
+                <div class='title'>Latest images</div>
+                
+                <div class='images'>
+                    <div class='image' ng-repeat='image in latest_images' title='{{image.date}}'>
+                        <img src='/content/{{image.src}}' />
+                    </div>
+                </div>
+            </div>
+
+            <div class='footer'>
+
+            </div>
+        </div>
+    </body>
+
+</html>
