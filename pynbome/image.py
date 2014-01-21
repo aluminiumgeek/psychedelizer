@@ -7,12 +7,15 @@
 # Class for psychedelic image processing
 
 import os
+import sys
 import random
 import importlib
 
 from wand.image import Image as Wand
 
 import pynbome
+
+sys.path.append(os.path.dirname(__file__)) 
 
 class NoImage(Exception):
     def __str__(self):
