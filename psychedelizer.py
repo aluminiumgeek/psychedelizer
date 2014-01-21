@@ -12,8 +12,7 @@ import urllib
 import json
 from datetime import datetime
 
-import tornado.ioloop
-from tornado import web
+from tornado import web, websocket, ioloop
 from tornado.options import define, options
 
 from pynbome import pynbome, image
@@ -29,7 +28,7 @@ SETTINGS = {
 }
 
 class UploadHandler(web.RequestHandler):
-    @tornado.web.asynchronous
+    @web.asynchronous
     def post(self):
         if self.request.files:
             fileinfo = self.request.files['file'][0]
@@ -67,7 +66,7 @@ class UploadHandler(web.RequestHandler):
         self.finish(data)
 
 class PreviewHandler(web.RequestHandler):
-    @tornado.web.asynchronous
+    @web.asynchronous
     def post(self):
         body = json.loads(self.request.body)
         
@@ -91,7 +90,7 @@ class PreviewHandler(web.RequestHandler):
         self.finish(data)
   
 class SaveHandler(web.RequestHandler):
-    @tornado.web.asynchronous
+    @web.asynchronous
     def post(self):
         body = json.loads(self.request.body)
 
@@ -110,10 +109,12 @@ class SaveHandler(web.RequestHandler):
         os.rename(tmp_image_path, image_path)
         
         img = image.Image(filename=image_path)
-        img.resize(200)
+        img.resize(120)
         img.save(small_image_path)
         
         data = {'new_image': image_name}
+        
+        UpdatesHandler.send_updates(data)
         
         self.finish(data)
 
@@ -121,14 +122,15 @@ class GetLatestHandler(web.RequestHandler):
     def get(self):
         images = self.get_images()
         
-        data = {'images': images}
+        data = {'images': images[::-1][:8]}
         
         self.finish(data)
       
     def get_images(self):
         content_directory = SETTINGS['saved_files']
         images = [image for image in os.listdir(content_directory)]
-        images = filter(lambda x: not x.startswith('s'), images)
+        images = filter(lambda x: not x.startswith('s') and not x.startswith('.'), images)
+        images.sort(key=lambda x: float(x[:-4])) # sort by unixtime
         
         return [{'src': image, 'date': utils.from_unix(image[:-4])} for image in images]
 
@@ -142,6 +144,20 @@ class LikeHandler(web.RequestHandler):
     pass
 
 
+socket_clients = set()
+class UpdatesHandler(websocket.WebSocketHandler):
+    def open(self):
+        socket_clients.add(self)
+        
+    def on_close(self):
+        socket_clients.remove(self)
+  
+    @staticmethod
+    def send_updates(data):
+        for client in socket_clients:
+            client.write_message(data)
+
+
 application = web.Application([
     (r'/api/upload', UploadHandler),
     (r'/api/preview', PreviewHandler),
@@ -149,6 +165,7 @@ application = web.Application([
     (r'/api/get_latest', GetLatestHandler),
     (r'/api/get_filters', GetFiltersHandler),
     (r'/api/like', LikeHandler),
+    (r'/updates', UpdatesHandler),
     (r'/(.*)', web.StaticFileHandler, {"path": "public"})
     ],
     **SETTINGS
@@ -156,6 +173,6 @@ application = web.Application([
 
 
 if __name__ == "__main__":
-    tornado.options.parse_command_line()
+    options.parse_command_line()
     application.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+    ioloop.IOLoop.instance().start()

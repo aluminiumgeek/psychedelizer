@@ -1,4 +1,4 @@
-body {
+html, body {
     background: #dedede url('/images/pattern.png') left top repeat;
     margin: 0;
     padding: 0;
@@ -15,15 +15,6 @@ h1 {
     position: relative;
 }
 
-.footer {
-    background-color: #ddd;
-    box-shadow: 0px -3px 7px rgba(0, 0, 0, 0.3);
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 36px;
-}
-
 .line {
     border-bottom: 1px solid #888;
     width: 95%;
@@ -32,12 +23,21 @@ h1 {
     
 }
 
-.upload-block {
-    width: 50%;
+.upload-block, .latest-block {
     margin: 0 auto;
     background-color: #eee;
     padding: 10px;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.6);
+}
+
+.upload-block {
+    width: 50%;
+}
+
+.latest-block {
+    width: 85%;
+    margin-bottom: 30px;
+
 }
 
 .title {
@@ -139,4 +139,96 @@ img.loading {
 
 .clear {
     clear: both;
+}
+
+.margin-20 {
+    margin: 20px;
+}
+
+.images {
+    text-align: center;
+    max-height: 135px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.images .image {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    margin: 5px;
+    cursor: pointer;
+    /*border: 3px solid #fff;*/
+    box-shadow: 0 0 3px #000;
+}
+
+.images .image img {
+    opacity: .7;
+    transition: opacity 100ms linear;
+}
+.images .image img:hover {
+    opacity: 1;
+}
+
+.enter-animation {
+    opacity: 1;
+    position: relative;
+    transition: left 400ms ease-out;
+    transition-property: left, opacity;
+}
+
+.enter-animation.created {
+    left: -30px;
+    opacity: 0!important;
+}
+
+.footer {
+    background-color: #ddd;
+    box-shadow: 0px -3px 7px rgba(0,0,0,0.3);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+}
+
+.footer .content {
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+    color: #aaa;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.footer .content .author {
+    float: left;
+    line-height: 30px;
+}
+
+.footer .content .author a {
+    color: #888;
+    text-decoration: none;
+}
+.footer .content .author a:hover {
+    border-bottom: 1px dashed #888;
+    color: #666;
+}
+
+.footer .content .icons {
+    float: right;
+    margin-top: 2px;
+}
+
+.footer .content .icons i {
+    margin-right: 10px;
+}
+
+.footer .content .icons a {
+    text-decoration: none;
+    color: #888;
+}
+
+.footer .content .icons a:hover {
+    color: #666;
 }

@@ -27,11 +27,11 @@
                 <div class='title'>Upload an image</div>
 
                 <div class='buttons'>
-                    <div class='computer btn btn-primary' title='From computer'>
+                    <div class='computer btn btn-primary' title='Browse your computer'>
                         <i class='fa fa-laptop'></i>
                         <input type="file" ng-file-select="file_selected($files)" >
                     </div>
-                    <div class='internet btn btn-info' title='From URL' ng-click='internet_input_toggle()'>
+                    <div class='internet btn btn-info' title='Enter image URL' ng-click='internet_input_toggle()'>
                         <i class='fa fa-globe'></i>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                 <div class='clear'></div>
 
                 <div class='save-block' ng-show='preview'>
-                    <button class='btn btn-success' ng-click='save()'>
+                    <button ng-class='{btn: true, "btn-success":true, disabled: selected.length == 0}' ng-click='save()'>
                         <i class='fa fa-save'></i>
                         Save
                     </button>
@@ -82,14 +82,29 @@
                 <div class='title'>Latest images</div>
                 
                 <div class='images'>
-                    <div class='image' ng-repeat='image in latest_images' title='{{image.date}}'>
-                        <img src='/content/{{image.src}}' />
+                    <div ng-class='{created: image.created, "enter-animation":  true, image: true}' ng-repeat='image in latest_images' title='{{image.date}}'>
+                        <a href='/content/{{image.src}}' target='_blank'>
+                            <img src='/content/s{{image.src}}' />
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <div class='clear margin-20'></div>
+            <br/><br/>
             <div class='footer'>
-
+                <div class="content">
+                    <div class="author">
+                        2014 <a href="http://0x80.ru">@aluminiumgeek</a>
+                    </div>
+                    <div class="icons">
+                        <i class="fa fa-html5 fa-2x"></i>
+                        <i class="fa fa-css3 fa-2x"></i>
+                        <a href="https://github.com/aluminiumgeek/psychedelizer" target="_blank">
+                            <i class="fa fa-github-alt fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

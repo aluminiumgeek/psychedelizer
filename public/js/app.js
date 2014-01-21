@@ -26,11 +26,33 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         })
     }
     
+    function init_websocket() {
+        var ws_addr = 'ws://'+location.hostname+':'+location.port+'/updates';
+        var ws = new WebSocket(ws_addr);
+        
+        ws.onmessage = function (evt) {
+            var data = angular.fromJson(evt.data);
+            
+            if (data.new_image) {
+                $scope.insert_image(data.new_image);
+            }
+        };
+    }
+    
     get_latest();
     get_filters();
+    init_websocket();
+    
+    $scope.clean = function() {
+        $scope.original = false;
+        $scope.preview = false;
+        $scope.selected = [];
+    }
     
     $scope.file_selected = function($files) {
         var file = $files[0];
+        
+        $scope.loading_image = true;
         
         $scope.upload = $upload.upload({
             url: '/api/upload',
@@ -43,13 +65,17 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
             
             $scope.internet_input = false;
             $scope.url = '';
+            
+            $scope.loading_image = false;
         });
       
     }
     
+    $scope.loading_image = false;
     $scope.internet_upload = function() {
-        console.debug('here');
-        if ($scope.url && $scope.url.match(/^http(.*)\.(jpg|jpeg|png)$/i)) {
+        if ($scope.url && $scope.url.match(/^http(.*)\.(jpg|jpeg|png)$/i) && !$scope.loading_image) {
+            $scope.loading_image = true;
+            
             $http({
                 url: '/api/upload',
                 method: 'post',
@@ -60,6 +86,8 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
                 
                 $scope.internet_input = false;
                 $scope.url = '';
+                
+                $scope.loading_image = false;
             })
         }
         else {
@@ -112,13 +140,29 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     }
     
     $scope.save = function() {
-        $http({
-            url: '/api/save',
-            method: 'post',
-            data: {image: $scope.preview}
-        }).success(function(data) {
-            console.log(data);
-        })
+        if ($scope.selected.length) {
+            $http({
+                url: '/api/save',
+                method: 'post',
+                data: {image: $scope.preview}
+            }).success(function(data) {
+                $scope.saved_image = data.new_image;
+                $scope.clean();
+            })
+        }
     }
     
+    $scope.insert_image = function(image) {
+        var img = { src: image, created: true };
+        $scope.latest_images.unshift(img);
+        
+        setTimeout(
+            function() {
+                var index = $scope.latest_images.indexOf(img);
+                $scope.latest_images[index].created = false;
+                $scope.$apply();
+            },
+            400
+        );
+    }
 });
