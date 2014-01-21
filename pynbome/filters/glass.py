@@ -16,8 +16,8 @@ def apply_filter(img):
     _, input_filename = tempfile.mkstemp(suffix='.png')
     _, output_filename = tempfile.mkstemp(suffix='.png')
     
-    width, height = img.size
-    img.crop(width=width, height=width)
+    #width, height = img.size
+    #img.crop(width=width, height=width)
     
     img.save(filename=input_filename)
 

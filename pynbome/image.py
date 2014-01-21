@@ -76,8 +76,11 @@ class Image(object):
         pattern_filename = os.path.join(os.path.dirname(__file__), pynbome.DATA_DIR, pattern_name)
             
         with Wand(filename=pattern_filename) as fg_img:
-            width, height = fg_img.size
-            self.img.crop(width=width, height=height)
+            #width, height = fg_img.size
+            #self.img.crop(width=width, height=height)
+            img_w, img_h = self.size()
+            
+            fg_img.resize(img_w, img_h)
     
             self.img.composite(fg_img, 0, 0)
             
