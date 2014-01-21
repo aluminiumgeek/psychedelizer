@@ -58,6 +58,15 @@ class Image(object):
         return self.img.size
         
     def resize(self, width=None, height=None):
+        assert not (width is None and height is None), 'No sizes specified'
+        
+        orig_w, orig_h = self.size()
+        
+        if width is None:
+            width = height * orig_w / orig_h
+        elif height is None:
+            height = width * orig_h / orig_w
+        
         self.img.resize(width, height)
 
     def combine(self, pattern_name=None):
@@ -91,5 +100,3 @@ class Image(object):
           
     def get_filter(self, filter_name):
         return importlib.import_module('filters.%s'%filter_name)
-
-      
