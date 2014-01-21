@@ -122,7 +122,8 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
             data: {
                 preview: $scope.preview, 
                 original: $scope.original,
-                filters: $scope.selected
+                filters: $scope.selected,
+                combine: $scope.use_pattern,
             }
         }).success(function(data) {
             $scope.preview = data.preview;
@@ -165,4 +166,6 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
             400
         );
     }
+    
+    $scope.use_pattern = true;
 });

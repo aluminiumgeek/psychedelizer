@@ -126,9 +126,15 @@ img.loading {
     text-align: center;
 }
 
-.filters .btn.active {
+.filters .btn-primary.active {
     background-color: #008cba;
     border-color: #0079a1;
+    opacity: 0.65;
+}
+
+.filters .btn-warning.active {
+    background-color: #e99002;
+    border-color: #d08002;
     opacity: 0.65;
 }
 

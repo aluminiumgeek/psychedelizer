@@ -50,6 +50,10 @@
                             {{filter}}
                         </span>
                     </div>
+                    
+                    <span ng-class='{btn: true, "btn-xs": true, "btn-warning": true, active: use_pattern}' ng-click='use_pattern = !use_pattern' title='Enable or disable pattern (default: enabled)'>
+                        pattern
+                    </span>
                 </div>
 
                 <div class='image-block' ng-show='original'>
