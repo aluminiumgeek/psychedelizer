@@ -10,6 +10,7 @@ import time
 import uuid
 import urllib
 import json
+import shutil
 from datetime import datetime
 
 from tornado import web, websocket, ioloop
@@ -46,7 +47,7 @@ class UploadHandler(web.RequestHandler):
             if 'url' in body:
                 image_file = urllib.urlopen(body['url']).read()
                 ext = urllib.unquote(body['url']).decode('utf-8').split('.')[-1]
-                cname = str(uuid.uuid4()) + ext
+                cname = str(uuid.uuid4()) + '.' + ext
             else:
                 data = {'error': 'No URL'}
                 self.finish(data)
@@ -57,9 +58,20 @@ class UploadHandler(web.RequestHandler):
             f.write(image_file)
             
         img = image.Image(filename=full_image_path)
-        #img.combine()
+        
+        width, height = img.size()
+        if width > 600:
+            img.resize(width=600)
+        elif height > 600:
+            img.resize(height=600)
+        
         preview_cname = str(uuid.uuid4()) + '.jpg'
         img.save(os.path.join(SETTINGS['upload_tmp'], preview_cname))
+        
+        shutil.copy2(
+            os.path.join(SETTINGS['upload_tmp'], preview_cname),
+            os.path.join(SETTINGS['upload_tmp'], cname)
+        )
 
         data = {'original': cname, 'preview': preview_cname}
 
@@ -109,7 +121,12 @@ class SaveHandler(web.RequestHandler):
         os.rename(tmp_image_path, image_path)
         
         img = image.Image(filename=image_path)
+        
+        width, height = img.size()
+        
+        img.image.crop(width/2-120, height/2-120, width=width/3, height=width/3)
         img.resize(120)
+        
         img.save(small_image_path)
         
         data = {'new_image': image_name}
