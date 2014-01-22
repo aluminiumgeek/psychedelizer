@@ -88,7 +88,7 @@ class PreviewHandler(web.RequestHandler):
         os.remove(preview_image_path)
         
         img = image.Image(filename=original_image_path)
-        if body['combine']:
+        if body['filters'] and body['combine']:
             img.combine()
         
         for filter_name in body['filters']:
