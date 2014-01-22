@@ -195,21 +195,21 @@ img.loading {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 30px;
+    height: 36px;
 }
 
 .footer .content {
     width: 400px;
     margin-left: auto;
     margin-right: auto;
-    font-size: 12px;
+    font-size: 14px;
     color: #aaa;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 .footer .content .author {
     float: left;
-    line-height: 30px;
+    line-height: 36px;
 }
 
 .footer .content .author a {
@@ -224,6 +224,7 @@ img.loading {
 .footer .content .icons {
     float: right;
     margin-top: 2px;
+/*     line-height: 36px; */
 }
 
 .footer .content .icons i {
