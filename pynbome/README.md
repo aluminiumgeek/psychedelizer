@@ -56,7 +56,7 @@ filter_name = filters[0]
 img.psychedelic(filter_name)
 ```
 
-###Use several transformation###
+###Use several transformations###
 Of course you can apply patterns and filters several times
 
 ```python
