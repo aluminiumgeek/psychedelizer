@@ -139,7 +139,7 @@ class GetLatestHandler(web.RequestHandler):
     def get(self):
         images = self.get_images()
         
-        data = {'images': images[::-1][:16]}
+        data = {'images': images[::-1][:33]}
         
         self.finish(data)
       

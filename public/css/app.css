@@ -153,7 +153,7 @@ img.loading {
 
 .images {
     text-align: center;
-    max-height: 135px;
+    max-height: 400px;
     overflow: hidden;
     width: 100%;
 }
