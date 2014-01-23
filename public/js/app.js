@@ -13,7 +13,28 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
             url: '/api/get_latest',
             method: 'get'
         }).success(function(data) {
-            $scope.latest_images = data.images;
+            var images = []
+            if ($scope.latest_images) {
+                $scope.latest_images.map(function(item) {
+                    images.push(item.src);
+                });
+            }
+            else {
+                $scope.latest_images = [];
+            }
+            
+            var new_items = [];
+
+            data.images.map(function(item) {
+                if (images.indexOf(item.src) == -1) {
+                    if (images.length) {
+                        $scope.insert_image(item);
+                    }
+                    else {
+                        $scope.latest_images.push(item);
+                    }
+                }
+            });
         })
     }
     
@@ -28,9 +49,9 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     
     function init_websocket() {
         var ws_addr = 'ws://'+location.hostname+':'+location.port+'/updates';
-        var ws = new WebSocket(ws_addr);
+        $scope.ws = new WebSocket(ws_addr);
         
-        ws.onmessage = function (evt) {
+        $scope.ws.onmessage = function (evt) {
             var data = angular.fromJson(evt.data);
             
             if (data.new_image) {
@@ -39,9 +60,14 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         };
     }
     
+    function init_ajaxupdater() {
+        setInterval(get_latest, 1500);
+    }
+    
     get_latest();
     get_filters();
-    init_websocket();
+    //init_websocket();
+    init_ajaxupdater();
     
     $scope.clean = function() {
         $scope.original = false;
@@ -154,7 +180,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     }
     
     $scope.insert_image = function(image) {
-        var img = { src: image, created: true };
+        var img = { src: image.src, date: image.date, created: true };
         $scope.latest_images.unshift(img);
         
         setTimeout(
@@ -167,5 +193,5 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         );
     }
     
-    $scope.use_pattern = true;
+    $scope.use_pattern = false;
 });

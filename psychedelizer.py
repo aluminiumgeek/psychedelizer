@@ -124,7 +124,12 @@ class SaveHandler(web.RequestHandler):
         
         img.save(small_image_path)
         
-        data = {'new_image': image_name}
+        new_image = {
+            'src': image_name,
+            'date': utils.from_unix(image_name[:-4])
+        }
+        
+        data = {'new_image': new_image}
         
         UpdatesHandler.send_updates(data)
         
@@ -134,12 +139,13 @@ class GetLatestHandler(web.RequestHandler):
     def get(self):
         images = self.get_images()
         
-        data = {'images': images[::-1][:8]}
+        data = {'images': images[::-1][:16]}
         
         self.finish(data)
       
     def get_images(self):
         content_directory = SETTINGS['saved_files']
+        
         images = [image for image in os.listdir(content_directory)]
         images = filter(lambda x: not x.startswith('s') and not x.startswith('.'), images)
         images.sort(key=lambda x: float(x[:-4])) # sort by unixtime
@@ -154,7 +160,6 @@ class GetFiltersHandler(web.RequestHandler):
 
 class LikeHandler(web.RequestHandler):
     pass
-
 
 socket_clients = set()
 class UpdatesHandler(websocket.WebSocketHandler):
@@ -173,6 +178,7 @@ class MainHandler(web.RequestHandler):
     def get(self):
         with open('public/index.html') as f:
             self.write(f.read())
+
 
 application = web.Application([
     (r'/api/upload', UploadHandler),
