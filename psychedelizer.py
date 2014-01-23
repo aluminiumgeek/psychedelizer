@@ -19,14 +19,9 @@ from tornado.options import define, options
 from pynbome import pynbome, image
 
 import utils
+from config import SETTINGS
 
 define("port", default=8000, help="run on the given port", type=int)
-
-SETTINGS = {
-    'upload_tmp': 'public/tmp',
-    'saved_files': 'public/content',
-    'debug': True
-}
 
 class UploadHandler(web.RequestHandler):
     @web.asynchronous
@@ -174,6 +169,10 @@ class UpdatesHandler(websocket.WebSocketHandler):
         for client in socket_clients:
             client.write_message(data)
 
+class MainHandler(web.RequestHandler):
+    def get(self):
+        with open('public/index.html') as f:
+            self.write(f.read())
 
 application = web.Application([
     (r'/api/upload', UploadHandler),
@@ -183,6 +182,7 @@ application = web.Application([
     (r'/api/get_filters', GetFiltersHandler),
     (r'/api/like', LikeHandler),
     (r'/updates', UpdatesHandler),
+    (r'/', MainHandler),
     (r'/(.*)', web.StaticFileHandler, {"path": "public"})
     ],
     **SETTINGS
