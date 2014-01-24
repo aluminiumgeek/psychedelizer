@@ -263,3 +263,8 @@ img.loading {
 .like.active {
     color: #F54949;
 }
+
+.sort-by {
+    text-align: center;
+    margin: 10px 0;
+}

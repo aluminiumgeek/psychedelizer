@@ -86,15 +86,23 @@
                 <div class='line'></div>
 
                 <div class='latest-block'>
-                    <div class='title'>Latest images</div>
+                    <div class='title'>Submitted images</div>
+
+                    <div class='sort-by'>
+                        <div class='btn-group'>
+                            <span ng-repeat='criteria in sort_criterias' ng-click='set_sort_by(criteria)' ng-class='{disabled: sort_by == criteria, btn: true, "btn-sm": true, "btn-primary": true}'>
+                            {{criteria}}
+                            </span>
+                        </div>
+                    </div>
                 
                     <div class='images'>
                         <div ng-class='{created: image.created, "enter-animation":  true, image: true}' ng-repeat='image in latest_images' title='{{image.date}}'>
                             <a href='/content/{{image.src}}' target='_blank'>
                                 <img src='/content/s{{image.src}}' />
                             </a>
-                            <div ng-class='{like: true, active: image.likes.indexOf(client_ip) != -1}' ng-click='like(image)'>
-                                <span class='count'>{{ image.likes.length }}</span>
+                            <div ng-class='{like: true, active: image.likes.data.indexOf(client_ip) != -1}' ng-click='like(image)'>
+                                <span class='count'>{{ image.likes.data.length }}</span>
                                 <i class='fa fa-heart'></i>
                             </div>
                         </div>

@@ -38,7 +38,7 @@ class UploadHandler(web.RequestHandler):
         
             image_file = fileinfo['body']
         else:
-            # self.get_arument() doesn't work here, 
+            # self.get_argument() doesn't work here, 
             # because Angular returns json.
             # So try to manually parse request body
             body = json.loads(self.request.body)
@@ -147,26 +147,54 @@ class SaveHandler(web.RequestHandler):
     def insert(self, item):
         db = SETTINGS['db']
         
-        item.update(likes=[])
+        item.update(likes=database.images['likes'])
         
         db.images.insert(item, callback=database.insert_callback)
 
 
 class GetLatestHandler(web.RequestHandler):
+    SORT_BY_DATE = 'new'
+    SORT_BY_LIKES = 'best'
+    SORT_CRITERIAS = (SORT_BY_DATE, SORT_BY_LIKES)
+    
     @web.asynchronous
     def get(self):
+        self.sort_by = self.SORT_BY_DATE
+      
         db = SETTINGS['db']
         
         fields = {'_id': False}
         
         cursor = db.images.find(fields=fields).sort([('_id', -1)]).limit(36)
         cursor.to_list(callback=self.finish_callback)
+        
+    @web.asynchronous
+    def post(self):
+        body = json.loads(self.request.body)
+        self.sort_by = body['sort_by']
+      
+        db = SETTINGS['db']
+        
+        fields = {'_id': False}
+        
+        if self.sort_by == self.SORT_BY_LIKES:
+            sort_command = [('likes.count', -1), ('_id',  -1)]
+        
+            cursor = db.images.find(fields=fields).sort(sort_command).limit(36)
+            cursor.to_list(callback=self.finish_callback)
     
     def finish_callback(self, result, error):
         if error:
             raise error
         elif result:
-            data = {'images': result, 'client_ip': utils.get_ip(self.request)}
+            
+          
+            data = {
+                'images': result, 
+                'client_ip': utils.get_ip(self.request),
+                'sort_by': self.sort_by,
+                'sort_criterias': self.SORT_CRITERIAS
+            }
         
             self.finish(data)
         else:
@@ -196,16 +224,15 @@ class LikeHandler(web.RequestHandler):
         
         _id = db_item['_id']
         
-        if ip in db_item['likes']:
-            db_item['likes'].remove(ip)
-            
-            update_command = {'$pull': {'likes': ip}}
+        if ip in db_item['likes']['data']:
+            db_item['likes']['data'].remove(ip)
+            db_item['likes']['count'] -= 1
         else:
-            db_item['likes'].append(ip)
+            db_item['likes']['data'].append(ip)
+            db_item['likes']['count'] += 1
             
-            update_command = {'$push': {'likes': ip}}
-        
-        result = yield motor.Op(db.images.update, {'_id': _id}, update_command)
+        update_command = {'$set': {'likes': db_item['likes']}}
+        yield motor.Op(db.images.update, {'_id': _id}, update_command)
         
         data = {'likes': db_item['likes']}
         

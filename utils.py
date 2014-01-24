@@ -25,6 +25,7 @@ def import_files_to_mongo():
     """Import unindexed files to the database"""
     
     import os
+    import database
     from tornado import gen, ioloop
     from config import SETTINGS
     
@@ -49,7 +50,7 @@ def import_files_to_mongo():
             'date': from_unix(image[:-4]),
             'unixtime': float(image[:-4]),
             'ip': '',
-            'likes': []
+            'likes': database.images['likes']
         }
         for image in images
     )

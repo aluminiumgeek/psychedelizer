@@ -9,9 +9,12 @@
 images = {
     'src': '',
     'date': '',
-    'unixtime': float(),
+    'unixtime': 0.0,
     'ip': '',
-    'likes': []
+    'likes': {
+        'count': 0,
+        'data': []
+    }
 }
 
 def insert_callback(result, error):

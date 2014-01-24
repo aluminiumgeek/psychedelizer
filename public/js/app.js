@@ -8,36 +8,46 @@
 var app = angular.module('Psychedelizer', ['angularFileUpload']);
 
 app.controller('HomeCtrl', function($scope, $http, $upload) {
-    function get_latest() {
+    function get_latest(sort_by) {
         $http({
             url: '/api/get_latest',
             method: 'get'
         }).success(function(data) {
             var images = []
-            if ($scope.latest_images) {
-                $scope.latest_images.map(function(item) {
-                    images.push(item.src);
+            
+            if (!sort_by || (sort_by && sort_by == data.sort_by)) {
+                if ($scope.latest_images) {
+                    $scope.latest_images.map(function(item) {
+                        images.push(item.src);
+                    });
+                }
+                else {
+                    $scope.latest_images = [];
+                }
+            
+                var new_items = [];
+
+                data.images.map(function(item) {
+                    if (images.indexOf(item.src) == -1) {
+                        if (images.length) {
+                            $scope.insert_image(item);
+                        }
+                        else {
+                            $scope.latest_images.push(item);
+                        }
+                    }
                 });
             }
             else {
-                $scope.latest_images = [];
+                $scope.latest_images = data.images;
             }
-            
-            var new_items = [];
-
-            data.images.map(function(item) {
-                if (images.indexOf(item.src) == -1) {
-                    if (images.length) {
-                        $scope.insert_image(item);
-                    }
-                    else {
-                        $scope.latest_images.push(item);
-                    }
-                }
-            });
             
             if (data.client_ip != $scope.client_ip) {
                 $scope.client_ip = data.client_ip;
+            }
+            
+            if (data.sort_criterias != $scope.sort_criterias) {
+                $scope.sort_criterias = data.sort_criterias;
             }
         })
     }
@@ -65,8 +75,10 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     }
     
     function init_ajaxupdater() {
-        setInterval(get_latest, 1500);
+        $scope.get_latest_descriptor = setInterval(get_latest, 1500);
     }
+    
+    $scope.sort_by = 'new';
     
     get_latest();
     get_filters();
@@ -205,9 +217,37 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
             url: '/api/like',
             method: 'post',
             data: {image: image}
-            }).success(function(data) {
-                var index = $scope.latest_images.indexOf(image);
-                $scope.latest_images[index].likes = data.likes;
-            })
+        }).success(function(data) {
+            var index = $scope.latest_images.indexOf(image);
+            $scope.latest_images[index].likes = data.likes;
+        })
     }
+    
+    
+    $scope.set_sort_by = function(criteria) {
+        switch (criteria) {
+            case 'new':
+                if ($scope.sort_by != criteria) {
+                    get_latest($scope.sort_by);
+                    $scope.sort_by = criteria;
+                    init_ajaxupdater();
+                }
+                break;
+            case 'best':
+            default:
+                if ($scope.sort_by != criteria) {
+                    $scope.sort_by = criteria;
+                    clearInterval($scope.get_latest_descriptor);
+                    
+                    $http({
+                        url: '/api/get_latest',
+                        method: 'post',
+                        data: {sort_by: criteria}
+                    }).success(function(data) {
+                        $scope.latest_images = data.images;
+                    })
+                }
+        }
+    }
+    
 });
