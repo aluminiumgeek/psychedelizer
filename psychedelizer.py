@@ -13,18 +13,20 @@ import json
 import shutil
 from datetime import datetime
 
+import motor
+
 from tornado import web, websocket, ioloop
 from tornado.options import define, options
 
 from pynbome import pynbome, image
 
 import utils
+import database
 from config import SETTINGS
 
 define("port", default=8000, help="run on the given port", type=int)
 
 class UploadHandler(web.RequestHandler):
-    @web.asynchronous
     def post(self):
         if self.request.files:
             fileinfo = self.request.files['file'][0]
@@ -72,8 +74,8 @@ class UploadHandler(web.RequestHandler):
 
         self.finish(data)
 
+
 class PreviewHandler(web.RequestHandler):
-    @web.asynchronous
     def post(self):
         body = json.loads(self.request.body)
         
@@ -95,9 +97,9 @@ class PreviewHandler(web.RequestHandler):
         data = {'original': body['original'], 'preview': preview_cname}
         
         self.finish(data)
+
   
 class SaveHandler(web.RequestHandler):
-    @web.asynchronous
     def post(self):
         body = json.loads(self.request.body)
 
@@ -126,31 +128,48 @@ class SaveHandler(web.RequestHandler):
         
         new_image = {
             'src': image_name,
-            'date': utils.from_unix(image_name[:-4])
+            'date': utils.from_unix(image_name[:-4]),
+            'ip': self.request.remote_ip
         }
+        
+        # Inserting item into db
+        self.insert(new_image.copy())
         
         data = {'new_image': new_image}
         
         UpdatesHandler.send_updates(data)
         
         self.finish(data)
+        
+    def insert(self, item):
+        db = SETTINGS['db']
+        
+        item.update(likes=[])
+        
+        db.images.insert(item, callback=database.insert_callback)
+
 
 class GetLatestHandler(web.RequestHandler):
+    @web.asynchronous
     def get(self):
-        images = self.get_images()
+        db = SETTINGS['db']
         
-        data = {'images': images[::-1][:33]}
+        fields = {'_id': False}
         
-        self.finish(data)
-      
-    def get_images(self):
-        content_directory = SETTINGS['saved_files']
+        cursor = db.images.find(fields=fields).sort([('_id', -1)]).limit(36)
+        cursor.to_list(callback=self.finish_callback)
+    
+    def finish_callback(self, result, error):
+        if error:
+            raise error
+        elif result:
+            data = {'images': result}
         
-        images = [image for image in os.listdir(content_directory)]
-        images = filter(lambda x: not x.startswith('s') and not x.startswith('.'), images)
-        images.sort(key=lambda x: float(x[:-4])) # sort by unixtime
-        
-        return [{'src': image, 'date': utils.from_unix(image[:-4])} for image in images]
+            self.finish(data)
+        else:
+            # No data, trying to import existing files into database
+            utils.import_files_to_mongo()
+
 
 class GetFiltersHandler(web.RequestHandler):
     def get(self):
@@ -158,8 +177,10 @@ class GetFiltersHandler(web.RequestHandler):
         
         self.finish(data)
 
+
 class LikeHandler(web.RequestHandler):
     pass
+
 
 socket_clients = set()
 class UpdatesHandler(websocket.WebSocketHandler):
@@ -173,6 +194,7 @@ class UpdatesHandler(websocket.WebSocketHandler):
     def send_updates(data):
         for client in socket_clients:
             client.write_message(data)
+
 
 class MainHandler(web.RequestHandler):
     def get(self):

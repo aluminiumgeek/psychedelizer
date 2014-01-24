@@ -6,8 +6,11 @@
 #
 # Application config
 
+import motor
+
 SETTINGS = {
     'upload_tmp': 'public/tmp',
     'saved_files': 'public/content',
+    'db': motor.MotorClient().open_sync().psychedelizer,
     'debug': True
 }
