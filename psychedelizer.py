@@ -132,7 +132,7 @@ class SaveHandler(web.RequestHandler):
             'src': image_name,
             'date': utils.from_unix(image_name[:-4]),
             'unixtime': float(image_name[:-4]),
-            'ip': self.request.remote_ip
+            'ip': utils.get_ip(self.request)
         }
         
         # Inserting item into db
@@ -166,7 +166,7 @@ class GetLatestHandler(web.RequestHandler):
         if error:
             raise error
         elif result:
-            data = {'images': result, 'client_ip': self.request.remote_ip}
+            data = {'images': result, 'client_ip': utils.get_ip(self.request)}
         
             self.finish(data)
         else:
@@ -190,7 +190,7 @@ class LikeHandler(web.RequestHandler):
         body = json.loads(self.request.body)
         
         item = body['image']
-        ip = self.request.remote_ip
+        ip = utils.get_ip(self.request)
         
         db_item = yield motor.Op(db.images.find_one, {'unixtime': item['unixtime']})
         
