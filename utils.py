@@ -37,6 +37,7 @@ def import_files_to_mongo():
         {
             'src': image, 
             'date': from_unix(image[:-4]),
+            'unixtime': float(image[:-4]),
             'ip': '',
             'likes': []
         }

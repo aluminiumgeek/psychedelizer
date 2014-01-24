@@ -93,6 +93,9 @@
                             <a href='/content/{{image.src}}' target='_blank'>
                                 <img src='/content/s{{image.src}}' />
                             </a>
+                            <div ng-class='{like: true, active: image.likes.indexOf(client_ip) != -1}' ng-click='like(image)'>
+                                <i class='fa fa-heart'></i>
+                            </div>
                         </div>
                     </div>
                 </div>

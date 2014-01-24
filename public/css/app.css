@@ -165,6 +165,7 @@ img.loading {
 }
 
 .images .image {
+    position: relative;
     display: inline-block;
     width: 120px;
     height: 120px;
@@ -245,3 +246,20 @@ img.loading {
     color: #666;
 }
 
+.images .image:hover .like {
+    opacity: 1;
+}
+
+.like {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    color: #cecece;
+    font-size: 20px;
+    opacity: 0;
+    text-shadow: 0px 1px 3px #000;
+    transition: 100ms linear;
+}
+.like.active {
+    color: #F54949;
+}

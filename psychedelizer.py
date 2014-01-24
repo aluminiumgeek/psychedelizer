@@ -15,7 +15,7 @@ from datetime import datetime
 
 import motor
 
-from tornado import web, websocket, ioloop
+from tornado import web, websocket, ioloop, gen
 from tornado.options import define, options
 
 from pynbome import pynbome, image
@@ -25,6 +25,7 @@ import database
 from config import SETTINGS
 
 define("port", default=8000, help="run on the given port", type=int)
+
 
 class UploadHandler(web.RequestHandler):
     def post(self):
@@ -39,8 +40,9 @@ class UploadHandler(web.RequestHandler):
         else:
             # self.get_arument() doesn't work here, 
             # because Angular returns json.
-            # So trying to manually parse request body
+            # So try to manually parse request body
             body = json.loads(self.request.body)
+            
             if 'url' in body:
                 image_file = urllib.urlopen(body['url']).read()
                 ext = urllib.unquote(body['url']).decode('utf-8').split('.')[-1]
@@ -129,6 +131,7 @@ class SaveHandler(web.RequestHandler):
         new_image = {
             'src': image_name,
             'date': utils.from_unix(image_name[:-4]),
+            'unixtime': float(image_name[:-4]),
             'ip': self.request.remote_ip
         }
         
@@ -163,7 +166,7 @@ class GetLatestHandler(web.RequestHandler):
         if error:
             raise error
         elif result:
-            data = {'images': result}
+            data = {'images': result, 'client_ip': self.request.remote_ip}
         
             self.finish(data)
         else:
@@ -179,7 +182,34 @@ class GetFiltersHandler(web.RequestHandler):
 
 
 class LikeHandler(web.RequestHandler):
-    pass
+    @web.asynchronous
+    @gen.engine
+    def post(self):
+        db = SETTINGS['db']
+      
+        body = json.loads(self.request.body)
+        
+        item = body['image']
+        ip = self.request.remote_ip
+        
+        db_item = yield motor.Op(db.images.find_one, {'unixtime': item['unixtime']})
+        
+        _id = db_item['_id']
+        
+        if ip in db_item['likes']:
+            db_item['likes'].remove(ip)
+            
+            update_command = {'$pull': {'likes': ip}}
+        else:
+            db_item['likes'].append(ip)
+            
+            update_command = {'$push': {'likes': ip}}
+        
+        result = yield motor.Op(db.images.update, {'_id': _id}, update_command)
+        
+        data = {'likes': db_item['likes']}
+        
+        self.finish(data)
 
 
 socket_clients = set()

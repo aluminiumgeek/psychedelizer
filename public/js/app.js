@@ -35,6 +35,10 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
                     }
                 }
             });
+            
+            if (data.client_ip != $scope.client_ip) {
+                $scope.client_ip = data.client_ip;
+            }
         })
     }
     
@@ -180,12 +184,13 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     }
     
     $scope.insert_image = function(image) {
-        var img = { src: image.src, date: image.date, created: true };
-        $scope.latest_images.unshift(img);
+        image.created = true;
+        
+        $scope.latest_images.unshift(image);
         
         setTimeout(
             function() {
-                var index = $scope.latest_images.indexOf(img);
+                var index = $scope.latest_images.indexOf(image);
                 $scope.latest_images[index].created = false;
                 $scope.$apply();
             },
@@ -194,4 +199,15 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     }
     
     $scope.use_pattern = false;
+    
+    $scope.like = function(image) {
+        $http({
+            url: '/api/like',
+            method: 'post',
+            data: {image: image}
+            }).success(function(data) {
+                var index = $scope.latest_images.indexOf(image);
+                $scope.latest_images[index].likes = data.likes;
+            })
+    }
 });
