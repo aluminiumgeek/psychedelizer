@@ -15,9 +15,11 @@ def get_ip(request):
     """Return ip from HTTP headers. If it's empty, return remote_ip from request instance"""
 
     if 'X-Real-Ip' in request.headers:
-        return request.headers['X-Real-Ip']
+        ip = request.headers['X-Real-Ip']
     else:
-        return request.remote_ip
+        ip = request.remote_ip
+        
+    return ip
 
 def import_files_to_mongo():
     """Import unindexed files to the database"""

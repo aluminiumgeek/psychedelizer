@@ -94,6 +94,7 @@
                                 <img src='/content/s{{image.src}}' />
                             </a>
                             <div ng-class='{like: true, active: image.likes.indexOf(client_ip) != -1}' ng-click='like(image)'>
+                                <span class='count'>{{ image.likes.length }}</span>
                                 <i class='fa fa-heart'></i>
                             </div>
                         </div>

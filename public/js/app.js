@@ -161,7 +161,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         })
     }
     
-     $scope.filter_in_selected = function(filter) {
+    $scope.filter_in_selected = function(filter) {
         if ($scope.selected.indexOf(filter) == -1) {
             return false;
         }
