@@ -223,11 +223,14 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         })
     }
     
+    $scope.show_likes = false;
     
     $scope.set_sort_by = function(criteria) {
         switch (criteria) {
             case 'new':
                 if ($scope.sort_by != criteria) {
+                    $scope.show_likes = false;
+                  
                     get_latest($scope.sort_by);
                     $scope.sort_by = criteria;
                     init_ajaxupdater();
@@ -245,6 +248,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
                         data: {sort_by: criteria}
                     }).success(function(data) {
                         $scope.latest_images = data.images;
+                        $scope.show_likes = true;
                     })
                 }
         }

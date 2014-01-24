@@ -101,7 +101,7 @@
                             <a href='/content/{{image.src}}' target='_blank'>
                                 <img src='/content/s{{image.src}}' />
                             </a>
-                            <div ng-class='{like: true, active: image.likes.data.indexOf(client_ip) != -1}' ng-click='like(image)'>
+                            <div ng-class='{like: true, active: image.likes.data.indexOf(client_ip) != -1, show: show_likes}' ng-click='like(image)'>
                                 <span class='count'>{{ image.likes.data.length }}</span>
                                 <i class='fa fa-heart'></i>
                             </div>

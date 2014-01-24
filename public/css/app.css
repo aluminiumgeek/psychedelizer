@@ -180,7 +180,7 @@ img.loading {
     opacity: .7;
     transition: opacity 100ms linear;
 }
-.images .image img:hover {
+.images .image:hover img {
     opacity: 1;
 }
 
@@ -246,19 +246,22 @@ img.loading {
     color: #666;
 }
 
-.images .image:hover .like {
+.images .image:hover .like, .like.show {
     opacity: 1;
 }
 
 .like {
     position: absolute;
-    right: 5px;
+    right: 0;
     top: 0;
     color: #cecece;
     font-size: 20px;
     opacity: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 5px;
+    border-radius: 0 0 0 5px;
     text-shadow: 0px 1px 3px #000;
-    transition: 100ms linear;
+    transition: all 100ms linear;
 }
 .like.active {
     color: #F54949;
