@@ -15,7 +15,6 @@ def import_files_to_mongo():
     """Import unindexed files to the database"""
     
     import os
-    import motor
     from tornado import gen, ioloop
     from config import SETTINGS
     
