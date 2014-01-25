@@ -9,6 +9,8 @@
 from datetime import datetime
 
 def from_unix(unixtime):
+    """Convert unixtime to readable datetime string"""
+    
     return datetime.fromtimestamp(float(unixtime)).strftime('%Y-%m-%d %H:%M:%S')
 
 def get_ip(request):
@@ -58,4 +60,3 @@ def import_files_to_mongo():
     db = SETTINGS['db']
     do_insert(images_items)
     ioloop.IOLoop.instance().start()
-    

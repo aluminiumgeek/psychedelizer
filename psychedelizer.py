@@ -28,15 +28,20 @@ define("port", default=8000, help="run on the given port", type=int)
 
 
 class UploadHandler(web.RequestHandler):
+    """Upload image file from computer or URL"""
+    
     def post(self):
+        # Upload from computer
         if self.request.files:
             fileinfo = self.request.files['file'][0]
             fname = fileinfo['filename']
-            ext = os.path.splitext(fname)[1]
+            ext = os.path.splitext(fname)[1] # file extension
         
             cname = str(uuid.uuid4()) + ext
         
             image_file = fileinfo['body']
+        
+        # Upload from URL
         else:
             # self.get_argument() doesn't work here, 
             # because Angular returns json.
@@ -44,6 +49,8 @@ class UploadHandler(web.RequestHandler):
             body = json.loads(self.request.body)
             
             if 'url' in body:
+                # Retrieve image file from specified urllib
+                
                 image_file = urllib.urlopen(body['url']).read()
                 ext = urllib.unquote(body['url']).decode('utf-8').split('.')[-1]
                 cname = str(uuid.uuid4()) + '.' + ext
@@ -56,6 +63,7 @@ class UploadHandler(web.RequestHandler):
         with open(full_image_path, 'w') as f:
             f.write(image_file)
             
+        # Create pynbome image object
         img = image.Image(filename=full_image_path)
         
         width, height = img.size()
@@ -78,6 +86,8 @@ class UploadHandler(web.RequestHandler):
 
 
 class PreviewHandler(web.RequestHandler):
+    """Apply patterns and filters and preview edited image"""
+    
     def post(self):
         body = json.loads(self.request.body)
         
@@ -87,12 +97,16 @@ class PreviewHandler(web.RequestHandler):
         os.remove(preview_image_path)
         
         img = image.Image(filename=original_image_path)
+        
+        # Apply patterns if necessary
         if body['filters'] and body['combine']:
             img.combine()
         
+        # Apply selected filters
         for filter_name in body['filters']:
             img.psychedelic(filter_name)
         
+        # Save image preview
         preview_cname = str(uuid.uuid4()) + '.jpg'
         img.save(os.path.join(SETTINGS['upload_tmp'], preview_cname))
         
@@ -102,6 +116,8 @@ class PreviewHandler(web.RequestHandler):
 
   
 class SaveHandler(web.RequestHandler):
+    """Save image when editing was done"""
+    
     def post(self):
         body = json.loads(self.request.body)
 
@@ -123,6 +139,7 @@ class SaveHandler(web.RequestHandler):
         
         width, height = img.size()
         
+        # Create cropped and resized thumbnail
         img.image.crop(width/2-120, height/2-120, width=width/3, height=width/3)
         img.resize(120)
         
@@ -140,6 +157,7 @@ class SaveHandler(web.RequestHandler):
         
         data = {'new_image': new_image}
         
+        # Send new image data to websocket clients
         UpdatesHandler.send_updates(data)
         
         self.finish(data)
@@ -153,37 +171,52 @@ class SaveHandler(web.RequestHandler):
 
 
 class GetLatestHandler(web.RequestHandler):
+    """Get latest images, sort if necessary"""
+    
+    # Sort constants
     SORT_BY_DATE = 'new'
     SORT_BY_LIKES = 'best'
     SORT_CRITERIAS = (SORT_BY_DATE, SORT_BY_LIKES)
     
     @web.asynchronous
     def get(self):
+        """
+        GET request without params means that we need images
+        sorted by date
+        """
+        
         self.sort_by = self.SORT_BY_DATE
-      
+        
         db = SETTINGS['db']
         
         fields = {'_id': False}
         
+        # Select image items
         cursor = db.images.find(fields=fields).sort([('_id', -1)]).limit(36)
         cursor.to_list(callback=self.finish_callback)
         
     @web.asynchronous
     def post(self):
+        """POST request's body must contain sort_by parameter"""
+        
         body = json.loads(self.request.body)
         self.sort_by = body['sort_by']
-      
+        
         db = SETTINGS['db']
         
         fields = {'_id': False}
         
         if self.sort_by == self.SORT_BY_LIKES:
+            # Sort by likes count
+            
             sort_command = [('likes.count', -1), ('_id',  -1)]
         
             cursor = db.images.find(fields=fields).sort(sort_command).limit(36)
             cursor.to_list(callback=self.finish_callback)
     
     def finish_callback(self, result, error):
+        """Finish data retrieving"""
+        
         if error:
             raise error
         elif result:
@@ -193,7 +226,7 @@ class GetLatestHandler(web.RequestHandler):
                 'sort_by': self.sort_by,
                 'sort_criterias': self.SORT_CRITERIAS
             }
-        
+            
             self.finish(data)
         else:
             # No data, trying to import existing files into database
@@ -201,6 +234,8 @@ class GetLatestHandler(web.RequestHandler):
 
 
 class GetFiltersHandler(web.RequestHandler):
+    """Return list of pynbome filters"""
+    
     def get(self):
         data = {'filters': pynbome.list_filters()}
         
@@ -208,8 +243,10 @@ class GetFiltersHandler(web.RequestHandler):
 
 
 class LikeHandler(web.RequestHandler):
+    """Like/unlike image handler"""
+    
     @web.asynchronous
-    @gen.engine
+    @gen.engine # we'll use inline callbacks
     def post(self):
         db = SETTINGS['db']
       
@@ -218,17 +255,20 @@ class LikeHandler(web.RequestHandler):
         item = body['image']
         ip = utils.get_ip(self.request)
         
+        # Get item
         db_item = yield motor.Op(db.images.find_one, {'unixtime': item['unixtime']})
         
         _id = db_item['_id']
         
+        # Save like/unlike on item
         if ip in db_item['likes']['data']:
             db_item['likes']['data'].remove(ip)
             db_item['likes']['count'] -= 1
         else:
             db_item['likes']['data'].append(ip)
             db_item['likes']['count'] += 1
-            
+        
+        # Update item
         update_command = {'$set': {'likes': db_item['likes']}}
         yield motor.Op(db.images.update, {'_id': _id}, update_command)
         
@@ -239,6 +279,8 @@ class LikeHandler(web.RequestHandler):
 
 socket_clients = set()
 class UpdatesHandler(websocket.WebSocketHandler):
+    """Handler for send updates through websocket"""
+  
     def open(self):
         socket_clients.add(self)
         
@@ -252,7 +294,11 @@ class UpdatesHandler(websocket.WebSocketHandler):
 
 
 class MainHandler(web.RequestHandler):
+    """Angular app's main page"""
+    
     def get(self):
+        # We don't use render() because angular templates
+        # and tornado templates are not friends
         with open('public/index.html') as f:
             self.write(f.read())
 
