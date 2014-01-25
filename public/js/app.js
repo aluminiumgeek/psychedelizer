@@ -112,10 +112,14 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         });
       
     }
-    
+
     $scope.loading_image = false;
+    $scope.$watch('url', function() {
+        $scope.enable_upload_button = $scope.url && $scope.url.match(/^http(.*)\.(jpg|jpeg|png)$/i)
+    });
+    
     $scope.internet_upload = function() {
-        if ($scope.url && $scope.url.match(/^http(.*)\.(jpg|jpeg|png)$/i) && !$scope.loading_image) {
+        if ($scope.enable_upload_button && !$scope.loading_image) {
             $scope.loading_image = true;
             
             $http({

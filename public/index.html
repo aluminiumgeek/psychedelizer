@@ -40,8 +40,8 @@
                     </div>
                 
                     <div class='internet-input' ng-show='internet_input'>
-                        <input type='text' class='form-control' name='url' placeholder='http://' ng-model='url'/>
-                        <button class='btn btn-primary btn-success btn-sm' ng-click='internet_upload()'>
+                        <input type='text' class='form-control' name='url' placeholder='Enter image URL' ng-model='url'/>
+                        <button ng-class='{btn: 1, "btn-primary": 1, "btn-success": 1, "btn-sm": 1, disabled: !enable_upload_button}' ng-click='internet_upload()'>
                             <i class='fa fa-upload'></i>
                             Upload
                         </button>

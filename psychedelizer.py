@@ -187,8 +187,6 @@ class GetLatestHandler(web.RequestHandler):
         if error:
             raise error
         elif result:
-            
-          
             data = {
                 'images': result, 
                 'client_ip': utils.get_ip(self.request),
