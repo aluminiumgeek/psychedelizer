@@ -8,19 +8,12 @@
 
 import os
 import subprocess
-import tempfile
 
 from wand.image import Image
+from . import prepare_filter
 
-def apply_filter(img):
-    _, input_filename = tempfile.mkstemp(suffix='.png')
-    _, output_filename = tempfile.mkstemp(suffix='.png')
-    
-    #width, height = img.size
-    #img.crop(width=width, height=width)
-    
-    img.save(filename=input_filename)
-
+@prepare_filter
+def apply_filter(input_filename, output_filename):
     script_path = os.path.join(os.path.dirname(__file__), '../lib/glasseffects')    
     command = '{0} -e displace -a 25 -g 5 -w 0 -n 100 {1} {2}'.format(
         script_path,
