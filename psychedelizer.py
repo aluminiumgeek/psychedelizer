@@ -277,19 +277,20 @@ class LikeHandler(web.RequestHandler):
         self.finish(data)
 
 
-socket_clients = set()
 class UpdatesHandler(websocket.WebSocketHandler):
     """Handler for send updates through websocket"""
-  
+    
+    socket_clients = set()
+    
     def open(self):
-        socket_clients.add(self)
+        self.socket_clients.add(self)
         
     def on_close(self):
-        socket_clients.remove(self)
+        self.socket_clients.remove(self)
   
-    @staticmethod
-    def send_updates(data):
-        for client in socket_clients:
+    @classmethod
+    def send_updates(cls, data):
+        for client in cls.socket_clients:
             client.write_message(data)
 
 
