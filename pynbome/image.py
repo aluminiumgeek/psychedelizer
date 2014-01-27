@@ -76,8 +76,8 @@ class Image(object):
         @param state_type: type of the applied thing (pattern or filter)
         @type state_type: string
         
-        @param state_value: name of pattern or filter
-        @type state_value: string
+        @param state_value: name and/or settings of pattern/filter
+        @type state_value: string or dict
         """
         
         assert state_type in self.state, 'No such state type'
@@ -162,9 +162,13 @@ class Image(object):
         else:
             image_filter = self.get_filter(random.choice(pynbome.list_filters()))
         
-        self.img = image_filter.apply_filter(self.img)
+        self.img, settings = image_filter.apply_filter(self.img)
         
-        self.save_state(self.STATE_FILTERS, image_filter)
+        filter_state = {
+          'name': image_filter.__name__.split('.')[-1],
+          'settings': settings
+        }
+        self.save_state(self.STATE_FILTERS, filter_state)
           
     def save(self, filename):
         """

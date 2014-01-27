@@ -15,15 +15,19 @@ from . import prepare_filter
 
 @prepare_filter
 def apply_filter(input_filename, output_filename):
+    settings = {
+        'shift': random.randint(70, 190)
+    }
+    
     script_path = os.path.join(os.path.dirname(__file__), '../lib/pseudocolor')
     command = '{0} -o {3} {1} {2}'.format(
         script_path,
         input_filename,
         output_filename,
-        random.randint(70, 190)
+        settings['shift']
     )
     
     process = subprocess.Popen(command.split())
     process.wait()
     
-    return Image(filename=output_filename)
+    return Image(filename=output_filename), settings
