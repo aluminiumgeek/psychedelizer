@@ -313,6 +313,7 @@ application = web.Application([
     (r'/api/like', LikeHandler),
     (r'/updates', UpdatesHandler),
     (r'/', MainHandler),
+    (r'/image/\d+.\d+', MainHandler),
     (r'/(.*)', web.StaticFileHandler, {"path": "public"})
     ],
     **SETTINGS

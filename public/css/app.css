@@ -1,8 +1,11 @@
 html, body {
-    background: #dedede url('/images/pattern.png') left top repeat;
     margin: 0;
     padding: 0;
     height: 100%;
+}
+
+body {
+    background: #dedede url('/images/pattern.png') left top repeat;
 }
 
 h1 {

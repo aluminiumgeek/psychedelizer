@@ -6,110 +6,30 @@
 
         <meta name="keywords" content="psychedelic, images, generator, psychedelia, lsd images, psychedelic pictures, lsd generator" />
 
-        <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 
 
-        <script src="js/angular.min.js"></script>
-        <script src="js/angular-resource.min.js"></script>
-        <script src="js/angular-file-upload.min.js"></script>
-        <script src="js/app.js"></script>
+        <script src="/js/lib/angular.min.js"></script>
+        <script src="/js/lib/angular-resource.min.js"></script>
+        <script src="/js/lib/angular-route.min.js"></script>
+        <script src="/js/lib/angular-file-upload.min.js"></script>
+        <script src="/js/app.js"></script>
+        <script src="/js/controllers.js"></script>
+        <script src="/js/filters.js"></script>
 
-        <link href="css/yeti.css" rel="stylesheet"/>
-        <link href="css/app.css" rel="stylesheet"/>
+        <link href="/css/yeti.css" rel="stylesheet"/>
+        <link href="/css/app.css" rel="stylesheet"/>
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     </head>
 
     <body ng-controller='HomeCtrl'>
         <div id='container'>
-            <div id='page'>
+            <div class='header'>
                 <h1>Psychedelizer</h1>
-
                 <div class='line'></div>
-
-                <div class='upload-block'>
-                    <div class='title'>Upload an image</div>
-
-                    <div class='buttons'>
-                        <div class='computer btn btn-primary' title='Browse your computer'>
-                            <i class='fa fa-laptop'></i>
-                            <input type="file" ng-file-select="file_selected($files)" >
-                        </div>
-                        <div class='internet btn btn-info' title='Enter image URL' ng-click='internet_input_toggle()'>
-                            <i class='fa fa-globe'></i>
-                        </div>
-                    </div>
-                
-                    <div class='internet-input' ng-show='internet_input'>
-                        <input type='text' class='form-control' name='url' placeholder='Enter image URL' ng-model='url'/>
-                        <button ng-class='{btn: 1, "btn-primary": 1, "btn-success": 1, "btn-sm": 1, disabled: !enable_upload_button}' ng-click='internet_upload()'>
-                            <i class='fa fa-upload'></i>
-                            Upload
-                        </button>
-                    </div>
-
-                    <div class='filters' ng-show='original'>
-                        <div class='btn-group'>
-                            <span ng-repeat='filter in image_filters' ng-click='select_filter(filter)' ng-class='{active: filter_in_selected(filter), btn: original, "btn-xs": original, "btn-primary": original}'>
-                            {{filter}}
-                            </span>
-                        </div>
-                    
-                        <span ng-class='{btn: true, "btn-xs": true, "btn-warning": true, active: use_pattern}' ng-click='use_pattern = !use_pattern' title='Enable or disable pattern (default: disabled)'>
-                        pattern
-                        </span>
-                    </div>
-
-                    <div class='image-block' ng-show='original'>
-                        <div class='original' ng-show='original'>
-                            <img src='/tmp/{{original}}' />
-                        </div>
-                        <div class='arrow'>
-                            <i class='fa fa-long-arrow-right'></i>
-                        </div>
-                        <div class='preview' ng-show='preview'>
-                            <img src='/tmp/{{preview}}' ng-class='{loading: loading}'/>
-                        </div>
-                    </div>
-
-                    <div class='clear'></div>
-
-                    <div class='save-block' ng-show='preview'>
-                        <button ng-class='{btn: true, "btn-success":true, disabled: selected.length == 0}' ng-click='save()'>
-                            <i class='fa fa-save'></i>
-                            Save
-                        </button>
-                    </div>
-
-                
-                </div>
-
-                <div class='line'></div>
-
-                <div class='latest-block'>
-                    <div class='title'>Submitted images</div>
-
-                    <div class='sort-by'>
-                        <div class='btn-group'>
-                            <span ng-repeat='criteria in sort_criterias' ng-click='set_sort_by(criteria)' ng-class='{disabled: sort_by == criteria, btn: true, "btn-sm": true, "btn-primary": true}'>
-                            {{criteria}}
-                            </span>
-                        </div>
-                    </div>
-                
-                    <div class='images'>
-                        <div ng-class='{created: image.created, "enter-animation":  true, image: true}' ng-repeat='image in latest_images' title='{{image.date}}'>
-                            <a href='/content/{{image.src}}' target='_blank'>
-                                <img src='/content/s{{image.src}}' />
-                            </a>
-                            <div ng-class='{like: true, active: image.likes.data.indexOf(client_ip) != -1, show: show_likes}' ng-click='like(image)'>
-                                <span class='count'>{{ image.likes.data.length }}</span>
-                                <i class='fa fa-heart'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
+            <div id='page' ng-view></div>
             
             <div class='footer'>
                 <div class="content">
