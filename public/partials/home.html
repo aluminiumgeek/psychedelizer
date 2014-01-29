@@ -67,7 +67,7 @@
 
     <div class='sort-by'>
         <div class='btn-group'>
-            <span ng-repeat='criteria in sort_criterias' ng-click='set_sort_by(criteria)' ng-class='{disabled: sort_by == criteria, btn: true, "btn-sm": true, "btn-primary": true}'>
+            <span ng-repeat='criteria in sort_criterias' ng-click='set_sort_by(criteria)' ng-class='{disabled: sort_by == criteria || $index == 0 && !sort_by, btn: true, "btn-sm": true, "btn-primary": true}'>
             {{criteria}}
             </span>
         </div>

@@ -69,7 +69,7 @@ app.controller('HomeCtrl', function($rootScope, $scope, $http, $upload, $locatio
         $scope.get_latest_descriptor = setInterval(get_latest, 1500);
     }
     
-    $scope.sort_by = 'new';
+    //$scope.sort_by = 'new';
     
     get_latest();
     get_filters();
@@ -232,18 +232,18 @@ app.controller('HomeCtrl', function($rootScope, $scope, $http, $upload, $locatio
     $scope.set_sort_by = function(criteria) {
         switch (criteria) {
             case 'new':
-                if ($scope.sort_by != criteria) {
+                if ($rootScope.sort_by != criteria) {
                     $scope.show_likes = false;
                   
                     get_latest($scope.sort_by);
-                    $scope.sort_by = criteria;
+                    $rootScope.sort_by = criteria;
                     $scope.init_ajaxupdater();
                 }
                 break;
             case 'best':
             default:
-                if ($scope.sort_by != criteria) {
-                    $scope.sort_by = criteria;
+                if ($rootScope.sort_by != criteria) {
+                    $rootScope.sort_by = criteria;
                     clearInterval($scope.get_latest_descriptor);
                     
                     $http({
