@@ -1,4 +1,4 @@
-app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
+app.controller('HomeCtrl', function($rootScope, $scope, $http, $upload, $location) {
     function get_latest(sort_by) {
         $http({
             url: '/api/get_latest',
@@ -7,13 +7,13 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
             var images = []
             
             if (!sort_by || (sort_by && sort_by == data.sort_by)) {
-                if ($scope.latest_images) {
-                    $scope.latest_images.map(function(item) {
+                if ($rootScope.latest_images) {
+                    $rootScope.latest_images.map(function(item) {
                         images.push(item.src);
                     });
                 }
                 else {
-                    $scope.latest_images = [];
+                    $rootScope.latest_images = [];
                 }
             
                 var new_items = [];
@@ -24,13 +24,13 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
                             $scope.insert_image(item);
                         }
                         else {
-                            $scope.latest_images.push(item);
+                            $rootScope.latest_images.push(item);
                         }
                     }
                 });
             }
             else {
-                $scope.latest_images = data.images;
+                $rootScope.latest_images = data.images;
             }
             
             if (data.client_ip != $scope.client_ip) {
@@ -202,11 +202,11 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
     $scope.insert_image = function(image) {
         image.created = true;
         
-        $scope.latest_images.unshift(image);
+        $rootScope.latest_images.unshift(image);
         
         setTimeout(
             function() {
-                var index = $scope.latest_images.indexOf(image);
+                var index = $rootScope.latest_images.indexOf(image);
                 $scope.latest_images[index].created = false;
                 $scope.$apply();
             },
@@ -222,8 +222,8 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
             method: 'post',
             data: {image: image}
         }).success(function(data) {
-            var index = $scope.latest_images.indexOf(image);
-            $scope.latest_images[index].likes = data.likes;
+            var index = $rootScope.latest_images.indexOf(image);
+            $rootScope.latest_images[index].likes = data.likes;
         })
     }
     
@@ -251,7 +251,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
                         method: 'post',
                         data: {sort_by: criteria}
                     }).success(function(data) {
-                        $scope.latest_images = data.images;
+                        $rootScope.latest_images = data.images;
                         $scope.show_likes = true;
                     })
                 }
@@ -260,8 +260,15 @@ app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
     
 });
 
-app.controller('ImageCtrl', function($scope, $http, $routeParams) {
+app.controller('ImageCtrl', function($rootScope, $scope, $http, $routeParams) {
     $scope.unixtime = $routeParams.unixtime;
+    
+    $http({
+            url: '/api/get_latest',
+            method: 'get'
+    }).success(function(data) {
+        $scope.client_ip = data.client_ip;
+    });
     
     $http({
         url: '/api/image/'+$scope.unixtime,
@@ -270,4 +277,20 @@ app.controller('ImageCtrl', function($scope, $http, $routeParams) {
         $scope.image = data;
     });
 
+    $scope.like = function(image) {
+        $http({
+            url: '/api/like',
+            method: 'post',
+            data: {image: image}
+        }).success(function(data) {
+            $scope.image.likes = data.likes;
+            
+            $rootScope.latest_images.map(function(item) {
+                if (item.unixtime == image.unixtime) {
+                    item.likes = data.likes;
+                }
+            });
+        })
+    }
+    
 });

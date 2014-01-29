@@ -149,7 +149,8 @@ class SaveHandler(web.RequestHandler):
             'src': image_name,
             'date': utils.from_unix(image_name[:-4]),
             'unixtime': float(image_name[:-4]),
-            'ip': utils.get_ip(self.request)
+            'ip': utils.get_ip(self.request),
+            'likes': database.images['likes']
         }
         
         # Inserting item into db
@@ -290,7 +291,8 @@ class ImageHandler(web.RequestHandler):
         data = {
             'src': db_item['src'],
             'likes': db_item['likes'],
-            'date': db_item['date']
+            'date': db_item['date'],
+            'unixtime': db_item['unixtime']
         }
         
         self.finish(data)

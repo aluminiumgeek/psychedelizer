@@ -18,6 +18,12 @@
         <a href='/content/{{image.src}}' target='_blank' title='Posted at {{image.date | extract:"time"}} on {{image.date | extract:"date"}}'>
             <img src='/content/{{image.src}}' id='image' />
         </a>
+        
+        <div ng-class='{like: true, show: true, active: image.likes && image.likes.data.indexOf(client_ip) != -1}' ng-click='like(image)'>
+            <span class='count'>{{ image.likes.data.length }}</span>
+            <i class='fa fa-heart'></i>
+        </div>
+        
         <div class='social'>
             <a class='btn btn-primary' href='http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://psychedelizer.0x80.ru/image/{{image.src | remove_ext}}&p[images][0]=http://psychedelizer.0x80.ru/content/{{image.src}}&p[title]=I%20created%20this%20image%20with%20Psychedelizer&p[summary]=' target='_blank'>
                 <i class='fa fa-facebook'></i>
