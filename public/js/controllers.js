@@ -1,4 +1,4 @@
-app.controller('HomeCtrl', function($scope, $http, $upload) {
+app.controller('HomeCtrl', function($scope, $http, $upload, $location) {
     function get_latest(sort_by) {
         $http({
             url: '/api/get_latest',
@@ -184,8 +184,17 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
                 method: 'post',
                 data: {image: $scope.preview}
             }).success(function(data) {
+                clearInterval($scope.get_latest_descriptor);
+                
                 $scope.saved_image = data.new_image;
                 $scope.clean();
+                
+                //$scope.$apply(function() {
+                    var src = $scope.saved_image.src;
+                    var image_link = src.substr(0, src.lastIndexOf('.'));
+                    
+                    $location.path('/image/' + image_link);
+                //});
             })
         }
     }
