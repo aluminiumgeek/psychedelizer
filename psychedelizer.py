@@ -277,6 +277,25 @@ class LikeHandler(web.RequestHandler):
         self.finish(data)
 
 
+class ImageHandler(web.RequestHandler):
+    """Fetch one image info"""
+  
+    @web.asynchronous
+    @gen.engine
+    def get(self, unixtime):
+        db = SETTINGS['db']
+        
+        db_item = yield motor.Op(db.images.find_one, {'unixtime': float(unixtime)})
+        
+        data = {
+            'src': db_item['src'],
+            'likes': db_item['likes'],
+            'date': db_item['date']
+        }
+        
+        self.finish(data)
+
+
 class UpdatesHandler(websocket.WebSocketHandler):
     """Handler for send updates through websocket"""
     
@@ -311,6 +330,7 @@ application = web.Application([
     (r'/api/get_latest', GetLatestHandler),
     (r'/api/get_filters', GetFiltersHandler),
     (r'/api/like', LikeHandler),
+    (r'/api/image/(\d+\.\d+)', ImageHandler),
     (r'/updates', UpdatesHandler),
     (r'/', MainHandler),
     (r'/image/\d+.\d+', MainHandler),

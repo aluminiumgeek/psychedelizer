@@ -65,7 +65,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
         };
     }
     
-    function init_ajaxupdater() {
+    $scope.init_ajaxupdater = function() {
         $scope.get_latest_descriptor = setInterval(get_latest, 1500);
     }
     
@@ -74,7 +74,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
     get_latest();
     get_filters();
     //init_websocket();
-    init_ajaxupdater();
+    //$scope.init_ajaxupdater();
     
     $scope.clean = function() {
         $scope.original = false;
@@ -228,7 +228,7 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
                   
                     get_latest($scope.sort_by);
                     $scope.sort_by = criteria;
-                    init_ajaxupdater();
+                    $scope.init_ajaxupdater();
                 }
                 break;
             case 'best':
@@ -252,6 +252,13 @@ app.controller('HomeCtrl', function($scope, $http, $upload) {
 });
 
 app.controller('ImageCtrl', function($scope, $http, $routeParams) {
-    $scope.image = $routeParams.unixtime;
-    console.log($scope.image);
+    $scope.unixtime = $routeParams.unixtime;
+    
+    $http({
+        url: '/api/image/'+$scope.unixtime,
+        method: 'get',
+    }).success(function(data) {
+        $scope.image = data;
+    });
+
 });

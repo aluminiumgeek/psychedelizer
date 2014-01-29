@@ -7,11 +7,11 @@
 
 var app = angular.module('Psychedelizer', ['angularFileUpload', 'ngRoute']);
 
-app.config(function ($routeProvider, $locationProvider) {
+app.config(function($routeProvider, $locationProvider) {
     $routeProvider.
         when('/', {
             templateUrl: '/partials/home.html',
-            controller: 'HomeCtrl'
+            controller: 'HomeCtrl',
         }).
         when('/image/:unixtime', {
             templateUrl: '/partials/image.html',
@@ -24,4 +24,18 @@ app.config(function ($routeProvider, $locationProvider) {
     if (window.history && window.history.pushState) {
         $locationProvider.html5Mode(true);
     }
+});
+
+app.run(function($rootScope) {
+    $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+        if (current.$$route.controller != 'HomeCtrl' && previous !== undefined) {
+            clearInterval(previous.locals.$scope.get_latest_descriptor);
+        }
+        else if (current.$$route.controller == 'HomeCtrl') {
+            $rootScope.$watch('current.locals.$scope', function() {
+                current.locals.$scope.init_ajaxupdater();
+            })
+        }
+    });
+    
 });

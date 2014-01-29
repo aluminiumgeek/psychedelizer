@@ -1,3 +1,43 @@
+<div class='header'>
+    <h1>Psychedelizer </h1>
+    <div class='line'></div>
+</div>
+
 <div class='show-image'>
-hi
+    <!-- Metadata for google -->
+    <span class='hidden' itemprop="name">Psychedelizer — Psychedelic Images Generator</span>
+    <span class='hidden' itemprop="description">I created this image with Psychedelizer</span>
+    <img class='hidden' itemprop="image" src="http://psychedelizer.0x80.ru/content/{{image.src}}">
+    <!-- /Metadata -->
+    
+    <div class='image' id='image-parent'>
+        <a href='/content/{{image.src}}' target='_blank' title='Posted at {{image.date | extract:"time"}} on {{image.date | extract:"date"}}'>
+            <img src='/content/{{image.src}}' id='image' />
+        </a>
+        <div class='social'>
+            <a class='btn btn-primary' href='http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://psychedelizer.0x80.ru/image/{{image.src | remove_ext}}&p[images][0]=http://psychedelizer.0x80.ru/content/{{image.src}}&p[title]=I%20created%20this%20image%20with%20Psychedelizer&p[summary]=' target='_blank'>
+                <i class='fa fa-facebook'></i>
+            </a>
+            <a class='btn btn-primary' href='http://twitter.com/home?status=i%20created%20this%20image%20with%20Psychedelizier%20http://psychedelizer.0x80.ru/image/{{image.src | remove_ext}}' target='_blank'>
+                <i class='fa fa-twitter'></i>
+            </a>
+            <a class='btn btn-primary' href='http://www.tumblr.com/share/photo?source=http://psychedelizer.0x80.ru/content/{{image.src}}&caption=I%20created%20this%20image%20with%20Psychedelizer&click_thru=http://psychedelizer.0x80.ru/content/{{image.src | remove_ext}}' target='_blank'>
+                <i class='fa fa-tumblr'></i>
+            </a>
+            <a class='btn btn-primary' href='https://plus.google.com/share?url=http://psychedelizer.0x80.ru/image/{{image.src | remove_ext}}' target='_blank'>
+                <i class='fa fa-google-plus'></i>
+            </a>
+            <a class='btn btn-primary' href='http://vk.com/share.php?url=http://psychedelizer.0x80.ru/content/{{image.src | remove_ext}}&image=http://psychedelizer.0x80.ru/content/{{image.src}}&title=Psychedelizer&description=I%20created%20this%20image%20with%20Psychedelizer&noparse' target='_blank'>
+                <i class='fa fa-vk'></i>
+            </a>
+        </div>
+    </div>
+    
+    <!--<div class='info'>
+        <div class='like'></div>
+        <div class='date'>
+            Posted at {{image.date | extract:"time"}} on {{image.date | extract:"date"}}
+        </div>
+    </div>-->
+
 </div>
