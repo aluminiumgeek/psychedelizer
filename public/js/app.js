@@ -34,6 +34,10 @@ app.run(function($rootScope) {
         else if (current.$$route.controller == 'HomeCtrl') {
             $rootScope.$watch('current.locals.$scope', function() {
                 current.locals.$scope.init_ajaxupdater();
+                
+                if ($rootScope.sort_by == 'best') {
+                    current.locals.$scope.show_likes = true;
+                }
             })
         }
     });
