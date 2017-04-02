@@ -3,11 +3,11 @@ pynbome
 
 A Python library to make psychedelic images
 
-##Requirements##
+## Requirements
 * [Wand](http://wand-py.org/)
 * [ImageMagick](http://imagemagick.org/)
 
-##Filters##
+## Filters
 There're several psychedelic filters:
 
 * **color** - rainbow colored transformation
@@ -20,8 +20,8 @@ There're several psychedelic filters:
 
 Filter sources located inside <code>filters</code> directory
 
-##Usage##
-###Basic usage###
+## Usage
+### Basic usage
 ```python
 from pynbome.image import Image
 
@@ -32,7 +32,7 @@ img.psychedelic()
 img.save('test.png')
 ```
 
-###List image patterns###
+### List image patterns
 Image.combine() method takes pattern image name as first argument. If pattern was not specified, a random pattern applies
 
 ```python
@@ -44,7 +44,7 @@ pattern_name = patterns[0]
 img.combine(pattern_name)
 ```
 
-###List image filters###
+### List image filters
 Image.psychedelic() method takes filter name as first argument. If filter was not specified, a random filter applies
 
 ```python
@@ -56,7 +56,7 @@ filter_name = filters[0]
 img.psychedelic(filter_name)
 ```
 
-###Use several transformations###
+### Use several transformations
 Of course you can apply patterns and filters several times
 
 ```python
@@ -71,7 +71,7 @@ for i in range(3):
 img.save('test.png')
 ```
 
-###Image state###
+### Image state
 There's history of applied patterns and filters in Image object
 
 ```python
@@ -82,7 +82,7 @@ for i in range(3):
 print img.state
 ```
 
-##Gallery##
+## Gallery
 ![1](http://i.imgur.com/jdVT3kI.jpg)  
 ![2](http://i.imgur.com/fm3wTvV.jpg)  
 ![3](http://i.imgur.com/OPf42cu.jpg)  
